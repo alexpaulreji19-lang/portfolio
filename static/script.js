@@ -1,24 +1,19 @@
-// Contact form — sends data to Flask via fetch, shows status message
-
-const form       = document.getElementById("contact-form");
-const submitBtn  = document.getElementById("submit-btn");
-const statusEl   = document.getElementById("form-status");
+const form = document.getElementById("contact-form");
+const statusEl = document.getElementById("form-status");
+const submitBtn = document.getElementById("submit-btn");
 
 form.addEventListener("submit", async (e) => {
-  e.preventDefault(); // stop the page from reloading
+  e.preventDefault();
 
-  // Disable button while submitting
   submitBtn.disabled = true;
   submitBtn.textContent = "Sending…";
   statusEl.textContent = "";
   statusEl.className = "form-status";
 
-  // Collect form data
   const formData = new FormData(form);
 
   try {
-    // POST to /submit (our Flask route)
-    const response = await fetch("/submit", {
+    const response = await fetch("/submit", {   // relative URL — works on any domain
       method: "POST",
       body: formData,
     });
@@ -28,7 +23,7 @@ form.addEventListener("submit", async (e) => {
     if (data.success) {
       statusEl.textContent = "✓ " + data.message;
       statusEl.classList.add("success");
-      form.reset(); // clear the fields
+      form.reset();
     } else {
       statusEl.textContent = "✗ " + (data.error || "Something went wrong.");
       statusEl.classList.add("error");
@@ -36,9 +31,9 @@ form.addEventListener("submit", async (e) => {
   } catch (err) {
     statusEl.textContent = "✗ Network error. Please try again.";
     statusEl.classList.add("error");
+    console.error("Submit error:", err);
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Send message →";
   }
-
-  // Re-enable button
-  submitBtn.disabled = false;
-  submitBtn.textContent = "Send message →";
 });
