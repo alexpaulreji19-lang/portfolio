@@ -7,7 +7,8 @@ app = Flask(__name__)
 # ---------- Database setup ----------
 # Use /tmp/database.db on Render (ephemeral but works for demos)
 # For persistent data, use a hosted DB like PostgreSQL on Render
-DB_PATH = os.environ.get("DB_PATH", "/tmp/database.db")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.environ.get("DB_PATH", os.path.join(BASE_DIR, "database.db"))
 
 def init_db():
     """Create the messages table if it doesn't exist."""
